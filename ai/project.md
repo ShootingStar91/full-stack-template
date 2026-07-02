@@ -5,9 +5,8 @@ the app and tests, how database migrations are handled, and which development fl
 Flows and skills reference this file instead of hardcoding commands, so the whole `ai/` setup can
 be copied into any project and adapted by editing only this file.
 
-> **Status: template defaults.** These values are the defaults for projects created from
-> full-stack-template (Taito CLI based). Run the `/setup-ai` skill to review and customize them
-> for this project — or edit this file directly.
+> **Status: configured** (via `/setup-ai`). This is the full-stack-template itself, so the Taito
+> CLI defaults apply as-is. Re-run `/setup-ai` anytime to review — or edit this file directly.
 
 ## Flow Usage
 

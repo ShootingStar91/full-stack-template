@@ -10,8 +10,8 @@ Interactively configures the AI development setup for this project. It is **safe
 of times**: every step first reports the current state and asks whether the user wants to keep or
 change it. Nothing is overwritten without the user seeing what will change.
 
-The steps are: **0) permissions → 1) project commands & migrations → 2) flow usage → final
-summary**. Work through them in order, conversationally, one step at a time. Wait for the user's
+The steps are: **0) permissions → 1) project commands & migrations → 2) flow usage → commit →
+final summary**. Work through them in order, conversationally, one step at a time. Wait for the user's
 answer at each decision point.
 
 ## Step 0: Tool Permissions
@@ -37,13 +37,18 @@ the project's test/lint commands) without prompting the user every time.
    `Bash(...)` rules, for Cursor CLI use `Shell(...)` rules):
    - Safe git commands: `git status`, `git diff`, `git log`, `git branch`, `git checkout`,
      `git add`, `git commit`
-   - Reading and editing files inside this repository
+   - Editing files inside this repository — this must be a concrete entry in the config, not
+     just implied: for Claude Code add `Edit(**)` (covers the Edit, Write, and NotebookEdit
+     tools for paths inside the project), for Cursor CLI add `Write(**)`
    - The project's test, lint, and app commands from `ai/project.md` (e.g. `taito test-unit`,
      `taito lint`, `taito start`, `taito curl`)
    - **Not included** (always prompt): `git push`, deleting files outside normal edits, anything
      touching remote/production environments.
 
 4. **Show the user the exact permission entries you intend to write and ask if this is OK.**
+   The full list of entries must be visible in the same message as the question — never ask
+   "is this permission set OK?" while the list only exists in your reasoning or an earlier tool
+   result. If you use a structured question prompt, print the list as text immediately before it.
    Apply their edits (add/remove entries), then write the config file, merging with any existing
    entries rather than replacing them. Verify the JSON is valid after writing.
 
@@ -61,9 +66,13 @@ flows and skills read.
    - How is the app/stack started for development? How do you check it's up? How is it stopped?
    - How are unit tests run? Integration/API tests? E2E tests? Which need the app running?
    - How are lint and typecheck run?
-   - How are **database migrations** created and applied? And importantly: **should the AI create
+   - **Database migrations**: before asking anything, state the current configuration in plain
+     text, e.g. "The project is currently configured to create migrations with `<command>`, apply
+     them with `<command>`, and the AI is currently allowed/not allowed to create and apply
+     migrations itself." Only then ask: does that match this project, and **should the AI create
      and apply migrations itself, or leave them to the user?** (Record the answer as the
-     migrations policy.)
+     migrations policy.) Never ask whether to "keep migrations the same" without first spelling
+     out what "the same" currently means.
    - Anything else unusual (special services, monorepo quirks, a package manager wrapper)?
 
 3. **Verify where cheap**: with the user's consent, run the lint or unit-test command they gave to
@@ -92,7 +101,10 @@ Goal: the right **Flow Usage** mode for this team and project is set in `ai/proj
      per session, TDD on the backend, layout-first on the frontend, mandatory validation gates
      with verifier subagents.
 
-3. **Ask whether flows should be used by default, or only when explicitly asked**:
+3. **Ask whether flows should be used by default, or only when explicitly asked.** The brief
+   flow descriptions from the previous point must appear as text immediately before this
+   question, in the same message — the user needs to know what small-flow and full-flow do
+   before choosing how they are triggered. Options:
    - **`default`** — the AI uses flows for every development task and infers which flow fits the
      prompt: small-flow unless the prompt requests a non-trivial new feature that likely needs
      more planning and iteration — then the full flow applies, but the AI always asks the user
@@ -107,6 +119,13 @@ Goal: the right **Flow Usage** mode for this team and project is set in `ai/proj
 4. **Apply**: set **Flow Usage** in `ai/project.md` (this is what the session rules in
    `ai/rules.md` read on every prompt); apply any requested customizations by editing the flow
    file(s) in `ai/flows/` directly. Summarize the edits made.
+
+## Commit
+
+After all steps are complete, commit the configuration changes directly (no need to ask): stage
+the files this setup touched (e.g. `.claude/settings.json`, `.cursor/cli.json`, `ai/project.md`,
+edited flow/skill files) and commit with a message like `chore(ai): configure AI development
+setup`. Do not stage unrelated pending changes, and do not push.
 
 ## Final Summary
 
