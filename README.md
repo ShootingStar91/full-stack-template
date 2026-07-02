@@ -30,6 +30,8 @@ Code. The shared setup lives in the [`ai/`](ai/README.md) directory; `.cursorrul
 - **Everyday triggers**: "run tests" executes all test suites; "push to git" commits and pushes
   following project conventions.
 - **Customize**: flows are plain markdown in `ai/flows/` — edit them directly or ask the AI.
+- **Read more**: human-facing docs with diagrams in [`ai/docs/overview.md`](ai/docs/overview.md)
+  and [`ai/docs/full-flow.md`](ai/docs/full-flow.md).
 
 See example feature specs in `server/features/example-feature.md` and `client/features/example-feature.md`.
 

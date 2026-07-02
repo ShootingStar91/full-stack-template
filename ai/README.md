@@ -14,6 +14,7 @@ works everywhere.
 | `flows/` | Selectable development flows. `small-flow.md` (implement → test → lint → commit) and `full-flow.md` (specs-driven with validation gates). The active one is named in `project.md`. |
 | `skills/` | Instructions for invocable skills (`/run-tests`, `/git-workflow`, `/setup-ai`, ...). |
 | `agents/` | Instructions for verifier subagents used by the full flow. |
+| `docs/` | Human-facing documentation with diagrams: [`docs/overview.md`](docs/overview.md) for the whole setup, [`docs/full-flow.md`](docs/full-flow.md) for the specs-driven flow in depth. |
 
 Knowledge docs (architecture, testing patterns, implementation flows) live next to the code they
 describe (`server/*.md`, `client/*.md`) and are indexed in `project.md`.
