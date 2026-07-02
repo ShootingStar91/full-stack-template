@@ -29,8 +29,8 @@ Manages git operations following the project's git workflow conventions defined 
      - `git checkout -b feature/feature-name dev`
      - Use descriptive name based on the work being done
    - **CRITICAL: Verify pre-commit requirements BEFORE committing** (from `git-workflow.md`):
-     - **Run all linters and typechecks**: `npm run taito-host-lint` (runs both client and server lint + typecheck in parallel)
-     - **Run unit tests** (recommended): `npm run taito-host-test-unit` (runs both client and server unit tests in parallel)
+     - **Run all linters and typechecks**: `taito lint` (runs client and server lint + typecheck in parallel)
+     - **Run unit tests** (recommended): `taito test-unit` (runs all client and server unit tests in parallel)
      - **Fix any errors** before proceeding to commit - do NOT commit if there are lint or typecheck errors
      - Ensure code follows project conventions and style guidelines
    - **Stage all changes**: `git add .`

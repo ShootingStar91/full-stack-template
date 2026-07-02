@@ -213,35 +213,28 @@ After generating the feature, automatically evaluate and refactor the "git diff"
 
 ## Step 6: Live Check Against Running Application
 
-After postprocess review is complete, **automatically start** the application and database containers, then run live checks against the running interface.
+After postprocess review is complete, **automatically start** the application stack (client, server, database, etc.), then run live checks against the running interface.
 
 ### Process
 
-1. **Automatically start database container** (do not ask user):
-   - Check if database container is already running: `docker ps | grep autoklinikka-parts-database`
-   - If not running, start it automatically: `docker-compose up -d autoklinikka-parts-database`
-   - Wait for database to be ready (check health or wait a few seconds with incremental checks)
+1. **Automatically start the application stack** (do not ask user):
+   - Start everything with a single command: `taito start` (add `--clean --init` for a clean start with a freshly initialized database)
+   - Wait for the server to be ready: check `taito curl server` (the server uptimez/health endpoint) with short incremental waits, not long fixed delays
 
-2. **Automatically start server container** (do not ask user):
-   - Check if server container is already running: `docker ps | grep autoklinikka-parts-server`
-   - If not running, start it automatically: `docker-compose up -d autoklinikka-parts-server`
-   - Wait for server to be ready (check `/api/healthz` endpoint with incremental waits, not long fixed delays)
-
-3. **Run live checks**:
-   - **MUST run** API tests against the live server: `cd server && npm run test:api`
-   - Verify that all API tests pass against the running application
-   - Check that the health endpoint responds: `curl http://localhost:8016/api/healthz` or equivalent
+2. **Run live checks**:
+   - **MUST run** the server integration and e2e tests against the live stack: `taito test:server`
+   - Verify that all tests pass against the running application
+   - Confirm the server responds: `taito curl server`
    - Verify that any new GraphQL queries/mutations work against the live server
    - Address any failures before proceeding
 
-4. **Stop containers** after live checks complete:
-   - Stop server container: `docker-compose stop autoklinikka-parts-server`
-   - Stop database container: `docker-compose stop autoklinikka-parts-database`
+3. **Stop the stack** after live checks complete:
+   - Stop all containers: `taito stop`
 
 **CRITICAL**: 
-- **Never ask the user to start containers**: Start them automatically if they're not running
+- **Never ask the user to start the stack**: Start it automatically with `taito start` if it isn't running
 - **Never skip this step**: Live check runs automatically as part of this step. Do not skip or make it conditional
-- **Only stop containers after all checks pass**: Keep containers running until all live checks are complete
+- **Only stop the stack after all checks pass**: Keep it running until all live checks are complete
 
 ## Step 7: Summary and Architecture Review
 

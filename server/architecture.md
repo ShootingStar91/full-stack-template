@@ -1,8 +1,5 @@
 # Server
 
-Looking for the old server instructions? See the old server docs [here](/docs/other/alternatives.md#autoklinikka-parts--server-old).
-You can also see all the major changes between the old and new server in the related [PR](https://github.com/TaitoUnited/autoklinikka-parts/pull/174) description.
-
 ## Structure recommendations
 
 ### Main project structure
@@ -833,7 +830,7 @@ When making changes to the database schema, follow these patterns to ensure cons
 1. **Modify schema files**: Update the appropriate `.db.ts` file(s) in the domain folder(s)
 2. **Generate migration**: Run `npm run db:migrate:generate` to create a migration file
 3. **Review migration**: Check the generated SQL in `/db/migrations/` folder
-4. **Test migration**: Run `npm run db:migrate` to test the migration locally
+4. **Test migration**: With the stack running (`taito start`), run `taito exec:server npm run db:migrate` to apply the migration inside the server container
 5. **Commit changes**: Commit both the schema changes and migration file
 
 ### Creating Migrations
@@ -846,8 +843,8 @@ To create a new migration:
 npm run db:migrate:generate
 
 # 3. Review the generated migration file in db/migrations/
-# 4. Run the migration
-npm run db:migrate
+# 4. Apply the migration inside the running server container (requires `taito start`)
+taito exec:server npm run db:migrate
 ```
 
 The migration generation command (`drizzle-kit generate`) will:
@@ -871,11 +868,14 @@ Available migration commands:
 # Generate a new migration from schema changes
 npm run db:migrate:generate
 
-# Run pending migrations
-npm run db:migrate
+# Apply pending migrations inside the running server container (requires `taito start`)
+taito exec:server npm run db:migrate
 
-# Drop all migrations (use with caution - only before running migrations)
+# Drop the last migration (use with caution - only before applying migrations)
 npm run db:migrate:drop
+
+# Recreate the database from scratch (re-applies all migrations and seeds)
+taito db recreate
 ```
 
 ### Handling Migration Errors

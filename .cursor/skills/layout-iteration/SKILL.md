@@ -16,28 +16,28 @@ Iterates on layout (positioning, styling, structure) until the app screen **matc
 
 ## Prerequisites
 
-- **Dev server**: Client app running in dev mode (e.g. `npm start` in client). **CRITICAL: Automatically start it if not running - never ask the user to start it.**
+- **Application stack**: The app running in dev mode, started with `taito start`. **CRITICAL: Automatically start it if not running - never ask the user to start it.**
 - **Figma screenshot**: User has provided a screenshot (or image) of the desired layout from Figma.
 - **Browser MCP**: Cursor's browser MCP (e.g. **cursor-ide-browser**) is available so you can open the app URL and capture state.
 - **Screenshot MCP (optional)**: If a screenshot MCP is configured (e.g. ScreenshotMCP, Webpage Screenshot MCP), you can capture a pixel image of the page and compare it to the Figma screenshot via vision. Otherwise use the backup or fallbacks below.
-- **Backup: ask user to take a screenshot**: If no screenshot MCP is available, you can ask the **user** to open the app in their browser (same URL, e.g. `http://localhost:5173/`), take a screenshot (e.g. browser dev tools, OS shortcut, or right‑click → “Save as”), and provide the image. You then compare that image to the Figma screenshot (e.g. via vision) and list differences. Use this when automated capture is not possible.
+- **Backup: ask user to take a screenshot**: If no screenshot MCP is available, you can ask the **user** to open the app in their browser (same URL, e.g. `http://localhost:9999/`), take a screenshot (e.g. browser dev tools, OS shortcut, or right‑click → “Save as”), and provide the image. You then compare that image to the Figma screenshot (e.g. via vision) and list differences. Use this when automated capture is not possible.
 - **Other fallbacks**: User-led comparison (user looks at live app and Figma and reports differences in words), or `browser_snapshot` + Figma to infer layout/CSS differences; user confirms or corrects.
 
 ## Instructions
 
 1. **Automatically ensure the app is running** (CRITICAL: Never ask user to start it)
-   - Check if client dev server is accessible: `curl http://localhost:5173` or check if port 5173 is in use
-   - If not running, **automatically start it**: `cd client && npm start` (run in background with `is_background: true`)
-   - Wait for dev server to be ready (use short incremental waits with health checks, e.g., wait 2-3 seconds, check if accessible, repeat if needed)
-   - Note the URL (e.g. `http://localhost:5173/`)
+   - Check if the app is accessible: `taito curl server` (server health), or get the client URL with `taito link client` (default `http://localhost:9999/`)
+   - If not running, **automatically start it**: `taito start` (run in background with `is_background: true`)
+   - Wait for the stack to be ready (use short incremental waits with health checks, e.g., wait 2-3 seconds, check `taito curl server`, repeat if needed)
+   - Note the URL (e.g. `http://localhost:9999/`)
    - **Never prompt the user**: If the app is not running, start it automatically without asking
 
 2. **Open the feature screen in the browser**  
-   Use the browser MCP to navigate to the URL where the feature is rendered (e.g. `http://localhost:5173/` or the route that shows the implemented layout). Use short waits and snapshots to confirm the page has loaded before comparing.
+   Use the browser MCP to navigate to the URL where the feature is rendered (e.g. `http://localhost:9999/` or the route that shows the implemented layout). Use short waits and snapshots to confirm the page has loaded before comparing.
 
 3. **Capture the current state for comparison**  
    - **If a screenshot MCP is available**: Capture a pixel screenshot of the page. Compare this image to the user's Figma screenshot (e.g. using vision) to list visual differences.
-   - **Backup — ask user to take a screenshot**: If no screenshot MCP is available, ask the **user** to open the app in their browser at the same URL (e.g. `http://localhost:5173/`), take a screenshot (browser or OS), and provide the image. Compare that image to the Figma screenshot (e.g. via vision) and list differences. Use this when automated capture is not possible.
+   - **Backup — ask user to take a screenshot**: If no screenshot MCP is available, ask the **user** to open the app in their browser at the same URL (e.g. `http://localhost:9999/`), take a screenshot (browser or OS), and provide the image. Compare that image to the Figma screenshot (e.g. via vision) and list differences. Use this when automated capture is not possible.
    - **Other fallbacks**: Use `browser_snapshot` to get page structure and/or ask the user to compare the live app with the Figma screenshot and report differences in words (spacing, alignment, fonts, colors, missing/extra elements, order). Alternatively, use the snapshot structure plus the Figma screenshot to infer layout/CSS differences where possible; have the user confirm or correct.
 
 4. **Compare and list differences**  

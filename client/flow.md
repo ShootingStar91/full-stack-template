@@ -25,7 +25,7 @@ Step 3 is implemented by the **layout-iteration** skill. The skill defines the f
 
 1. **Read the feature description** thoroughly
 2. **Obtain or confirm the user’s Figma screenshot** (or design reference) for the feature. This is the visual target for the layout iteration step.
-3. **Review design system**: Check Storybook (`npm run uikit:preview`) and design tokens in `/src/styled-system/tokens/` to identify existing components and tokens that can be used
+3. **Review design system**: Check Storybook (`taito uikit`) and design tokens in `/src/styled-system/tokens/` to identify existing components and tokens that can be used
 4. **Generate implementation plan** with two distinct parts:
 
    **Part A – Positioning & layout (no interactions, no data fetching)**
@@ -83,8 +83,8 @@ Iterate on layout until the app screen **matches the user’s Figma screenshot**
 3. **Get user confirmation** that layout is approved before proceeding to Step 4.
 
 **CRITICAL**: 
-- **Never ask the user to start the dev server**: The layout-iteration skill must automatically start the client dev server if it's not running
-- **Automatic startup**: Check if dev server is running, and if not, start it automatically (`cd client && npm start` in background)
+- **Never ask the user to start the app**: The layout-iteration skill must automatically start the application stack if it's not running
+- **Automatic startup**: Check if the app is running, and if not, start it automatically with `taito start` (in background)
 - The skill describes prerequisites (dev server, Figma screenshot, browser MCP, optional screenshot MCP) and fallbacks when no screenshot MCP is available (user-led comparison or structure-based comparison).
 
 ## Step 4: Interactions and Data Implementation

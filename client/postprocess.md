@@ -294,7 +294,7 @@ For each CSS style (Panda CSS utility, `css()` call, styled component, or inline
 
 #### Design System Review Process
 
-1. **Review Storybook**: Check all UI kit components in Storybook (`npm run uikit:preview`)
+1. **Review Storybook**: Check all UI kit components in Storybook (`taito uikit`)
 2. **Compare new components**: For each new component, check if a UI kit component exists that could be used instead
 3. **Compare custom values**: For each custom color, spacing, typography value, etc., check if a design token exists
 4. **Refactor**: Replace custom components/styles with design system components/tokens

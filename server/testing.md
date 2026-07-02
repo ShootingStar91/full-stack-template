@@ -21,42 +21,33 @@ Tests are co-located with the code they test:
 
 ## Running Tests
 
-The test runner uses Vitest configured via the `MODE` environment variable to run specific test types. All tests run inside a Docker container, so the application stack must be running first.
+The test runner uses Vitest configured via the `MODE` environment variable to run specific test types. Use the Taito CLI to run tests — it takes care of the environment and containers for you.
 
 **Prerequisites:**
-- Start the application stack: `taito start` (or ensure Docker containers are running)
+- The integration and e2e (API) tests run against the running stack, so start it first: `taito start`
+- Unit tests have no external dependencies and can be run without starting the stack
 
-**Run all tests:**
+**Run all server tests:**
 ```bash
+# Unit tests (no stack required)
+taito test-unit:server
+
+# Integration and e2e/API tests (requires `taito start`)
 taito test:server
-# or
-npm run test:server
 ```
 
-For local development, the command automatically uses `./scripts/run-tests.sh` which:
-- Checks if the database container is running and starts it if needed
-- Sets up proper environment variables (DATABASE_PORT=7974, etc.)
-- Runs all test suites: unit, integration, and API tests
-
-For cloud environments, tests run via Taito CLI inside Docker containers.
-
-**Run specific test types:**
+**Run a specific test:**
 ```bash
-# Unit tests only
-npm run test:unit
+# A single unit test
+taito test-unit:server my-test
 
-# Integration tests only
-npm run test:integration
-
-# API tests only
-npm run test:api
-
-# Watch mode (unit tests)
-npm run test:unit:watch
+# A specific integration/e2e test suite and test
+taito test:server my-suite my-test
 ```
 
-**Run tests in CI/CD:**
-Tests are automatically run in the CI pipeline. See `/test/test.sh` for the CI test configuration.
+`taito test-unit:server` runs the unit tests on the host, while `taito test:server` runs the
+integration and e2e tests inside the container against the running application. The same commands
+work locally and in CI/CD — the CI pipeline runs `taito test` automatically.
 
 ## Test Types
 

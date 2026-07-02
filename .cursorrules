@@ -165,21 +165,21 @@ After feature implementation completion (Step 4 for backend, Step 4 for frontend
 
 The `dev` and `master` branches are not protected. Development happens mostly by branching out from `dev`.
 
-## Running the App (Port Blocking)
+## Running the App
 
-**"Running the app" always means running both the client and server in dev mode**, not a production build or preview.
+**"Running the app" always means running the full application stack (client, server, database, etc.) in dev mode via the Taito CLI**, not a production build or preview.
 
-- **Client**: Run `npm start` in the `client/` directory (starts Vite dev server)
-- **Server**: Run `npm start` in the `server/` directory (starts the development server with database)
+- Start everything with a single command: `taito start`
+- For a clean start with a freshly initialized database: `taito start --clean --init` (or `taito develop`)
 
-Both should be running simultaneously for full application functionality. The server's `npm start` script handles database setup automatically.
+The Taito CLI runs all services (client, server, database, and any other containers) together, so there is no need to start them individually or manage Docker directly.
 
 ### Automatic App Startup
 
 **CRITICAL**: **NEVER ask the user to start the app**. Always start it automatically when needed.
 
 **When the app needs to be running**:
-- Testing (E2E tests, API tests against live server)
+- Testing (E2E tests, integration/API tests against the live server)
 - Layout iteration (comparing browser to Figma)
 - Debugging (inspecting running application)
 - Live checks (verifying implementation against running server)
@@ -188,29 +188,21 @@ Both should be running simultaneously for full application functionality. The se
 **Automatic startup procedure**:
 
 1. **Check if app is already running**:
-   - Check if client dev server is accessible (e.g., `curl http://localhost:5173` or check if port 5173 is in use)
-   - Check if server is accessible:
-     - Docker containers: `curl http://localhost:8016/api/healthz` (default docker-compose port)
-     - Direct npm start: `curl http://localhost:4000/api/healthz` (default dev server port)
-   - Check if Docker containers are running: `docker ps | grep autoklinikka-parts`
+   - Check server health: `taito curl server` (the server uptimez/health endpoint)
+   - Get the client URL if needed: `taito link client` (default `http://localhost:9999/`)
 
 2. **If not running, start automatically**:
-   - **Preferred method**: Run `npm start` from project root (starts everything via docker-compose, uses port 8016)
-   - **Alternative method (Individual services)**:
-     - Start database: `cd server && npm run dev:db:start` (if needed)
-     - Start server: `cd server && npm start` (in background, uses port 4000)
-     - Start client: `cd client && npm start` (in background, uses port 5173)
+   - Run `taito start` (add `--clean --init` for a clean start with a freshly initialized database)
 
-3. **Wait for services to be ready**:
-   - Wait for client to be accessible at `http://localhost:5173`
-   - Wait for server health endpoint:
-     - Docker: `http://localhost:8016/api/healthz`
-     - Direct npm: `http://localhost:4000/api/healthz`
+3. **Wait for the stack to be ready**:
+   - Poll `taito curl server` until the server responds
    - Use short incremental waits (2-3 seconds) with health checks rather than long fixed delays
 
 4. **Never ask the user**: If the app is not running and you need it, start it automatically. Do not prompt the user to start it.
 
-**Background execution**: When starting the app, run commands in the background (`is_background: true`) so they don't block other operations. The app will continue running for subsequent operations.
+**Background execution**: When starting the app, run `taito start` in the background (`is_background: true`) so it doesn't block other operations. The app will continue running for subsequent operations.
+
+**Stopping the stack**: Use `taito stop` to stop the application when you are done.
 
 **Error handling**: If the app fails to start, report the error and suggest troubleshooting steps, but do not ask the user to start it manually.
 

@@ -444,7 +444,7 @@ css({ padding: '13px', color: '#1f2937' })
 
 ### Design System Integration
 
-- **Check Storybook** (`npm run uikit:preview`) before creating new components
+- **Check Storybook** (`taito uikit`) before creating new components
 - **Use UI kit components** from `/src/components/uikit/`
 - **Use design tokens** from `/src/styled-system/tokens/`
 - **Desktop-only**: No responsive design considerations

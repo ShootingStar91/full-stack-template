@@ -34,26 +34,27 @@ src/
 
 ### Unit/Component Tests
 
-Run unit and component tests using Vitest:
+Run unit and component tests with the Taito CLI (Vitest under the hood):
 
 ```bash
-# Run all tests
-npm run test:unit
+# Run all client unit tests
+taito test-unit:client
 
-# Run tests in watch mode
-npm run test:unit:watch
-
-# Run tests with coverage
-npm run test:unit:coverage
+# Run a specific unit test
+taito test-unit:client my-test
 ```
 
 ### E2E Tests
 
-E2E tests are located in the `/playwright` directory and run separately:
+E2E tests are located in the `/playwright` directory and run against the full application stack.
+Start the stack with `taito start`, then run:
 
 ```bash
-# Run E2E tests
-cd playwright && npm test
+# Run all e2e tests
+taito test
+
+# Run only the Playwright e2e tests
+taito test:playwright
 ```
 
 ### CI/CD
