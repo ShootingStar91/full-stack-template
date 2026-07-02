@@ -4,6 +4,4 @@ description: Interactive, re-runnable setup of the AI development environment fo
 disable-model-invocation: false
 ---
 
-This skill's full instructions are shared across AI tools in `ai/skills/setup-ai.md`.
-
-Read `ai/skills/setup-ai.md` now and follow it as this skill's instructions.
+Read `ai/skills/setup-ai.md` now and follow it as this skill's instructions (the shared source used across AI tools).

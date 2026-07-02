@@ -13,23 +13,14 @@ be copied into any project and adapted by editing only this file.
 
 **Flow usage: `default`**
 
-This setting defines whether the AI uses the development flows on its own or only when asked:
-
-- `default` — the AI uses flows for every development task and **infers which flow fits the
-  prompt**: `small-flow` unless the prompt requests a non-trivial new feature that likely needs
-  more planning and iteration, in which case the full flow applies — but the AI must **ask the
-  user for permission before starting the full flow**.
-- `on-request` — the AI works normally without flows, and follows a flow only when the user
-  explicitly asks for one (e.g. *"use the full flow for this"*, *"let's generate a feature spec"*).
+What the modes (`default` / `on-request`) mean is defined in `ai/rules.md` — this file only holds
+the chosen value. Change it by editing the line above or re-running `/setup-ai`.
 
 Available flows are defined in `ai/flows/`:
 
 - `small-flow` — lightweight: implement the requested change, run and fix tests, lint, commit.
 - `full-flow` — specs-driven: feature specs as source of truth, TDD, validation gates, subagent
   verification.
-
-The user can always override the inferred flow for a single task by explicitly asking (e.g. *"use
-the small flow for this"*). Change the mode by editing the line above or re-running `/setup-ai`.
 
 ## Commands
 
@@ -47,9 +38,6 @@ mentioned elsewhere in the AI docs, this file wins.
 | Check whether the server is up (health check) | `taito curl server` |
 | Get the client URL | `taito link client` (default `http://localhost:9999/`) |
 | Stop the stack | `taito stop` |
-
-The AI starts the app automatically when a task needs it (tests, layout iteration, live checks) —
-it never asks the user to start it. Poll the health check with short waits until the stack is up.
 
 ### Tests
 
@@ -76,12 +64,6 @@ it never asks the user to start it. Poll the health check with short waits until
 - **May the AI create and apply migrations itself?** **yes** (local environment only). The AI may
   create migration files and apply them locally as part of implementing a feature. It must never
   run migrations against remote environments.
-
-## Git
-
-- Conventions (branching, commit format) are defined in `git-workflow.md` and executed via the
-  `git-workflow` skill.
-- The AI may branch, stage, and commit as part of a flow. It only pushes when the user asks.
 
 ## Knowledge docs
 
