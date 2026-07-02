@@ -14,16 +14,24 @@ You can use either monorepo or multirepo approach with this template. If you are
 
 [//]: # "TEMPLATE NOTE END"
 
-## Specs-Driven Development
+## AI-Assisted Development
 
-This template includes a specs-driven development workflow powered by Cursor AI. Here's how to use it:
+This template includes an AI-assisted development setup that works with both Cursor and Claude
+Code. The shared setup lives in the [`ai/`](ai/README.md) directory; `.cursorrules`, `CLAUDE.md`,
+`.cursor/` and `.claude/` are thin adapters pointing into it.
 
-- **Generate a feature**: Say "let's generate a client feature" or "let's generate a server feature" to start the feature description generation flow
-- **Implement a feature**: Say "let's implement feature X" (where X is the feature name) to start the interactive implementation flow
-- **Run tests**: Say "run tests" to execute all test suites (client unit tests, server tests, and E2E tests)
-- **Push to git**: Say "push to git" to commit and push changes following project conventions
+- **Set it up**: Run the `/setup-ai` skill. It configures tool permissions, records how this
+  project runs its app/tests/lint/migrations into `ai/project.md`, and lets you pick a flow. It is
+  re-runnable and also works after copying the `ai/` setup into a non-template project.
+- **Choose a flow** (in `ai/project.md`, selectable via `/setup-ai`):
+  - **small-flow** — the AI implements a small edit or feature, runs and fixes tests, lints, commits.
+  - **full-flow** — specs-driven development: say "let's generate a client/server feature" to write
+    a spec, "let's implement feature X" to implement it with TDD and validation gates.
+- **Everyday triggers**: "run tests" executes all test suites; "push to git" commits and pushes
+  following project conventions.
+- **Customize**: flows are plain markdown in `ai/flows/` — edit them directly or ask the AI.
 
-See example feature descriptions in `server/features/example-feature.md` and `client/features/example-feature.md` for reference.
+See example feature specs in `server/features/example-feature.md` and `client/features/example-feature.md`.
 
 # Project title
 

@@ -15,7 +15,7 @@ Layout is validated by comparing the app in the browser to the user’s Figma sc
 
 ### Layout iteration (Step 3)
 
-Step 3 is implemented by the **layout-iteration** skill. The skill defines the full procedure (prerequisites, run dev → open browser → capture → compare → fix → repeat until match). Prerequisites: dev server running; user’s Figma screenshot; browser MCP (cursor-ide-browser); optionally a screenshot MCP for pixel comparison. See [`.cursor/skills/layout-iteration/SKILL.md`](../.cursor/skills/layout-iteration/SKILL.md) for details.
+Step 3 is implemented by the **layout-iteration** skill. The skill defines the full procedure (prerequisites, run dev → open browser → capture → compare → fix → repeat until match). Prerequisites: dev server running; user’s Figma screenshot; browser MCP (cursor-ide-browser); optionally a screenshot MCP for pixel comparison. See [`ai/skills/layout-iteration.md`](../ai/skills/layout-iteration.md) for details.
 
 ## Step 1: Implementation Plan and User Confirmation
 
@@ -77,7 +77,7 @@ Iterate on layout until the app screen **matches the user’s Figma screenshot**
 
 ### Process
 
-1. **Run the layout-iteration skill**: Follow the procedure in [`.cursor/skills/layout-iteration/SKILL.md`](../.cursor/skills/layout-iteration/SKILL.md).
+1. **Run the layout-iteration skill**: Follow the procedure in [`ai/skills/layout-iteration.md`](../ai/skills/layout-iteration.md).
    - The skill covers: **automatically starting** the dev server if not running (never ask user), opening the feature screen in Cursor browser, capturing state (screenshot MCP or `browser_snapshot` / user comparison), comparing with the user’s Figma screenshot, listing differences, correcting layout in code, and repeating until match or user acceptance.
 2. **Do not add** interactions or data fetching in this step—only layout/styling fixes.
 3. **Get user confirmation** that layout is approved before proceeding to Step 4.
