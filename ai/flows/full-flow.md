@@ -4,8 +4,10 @@ The heavyweight, specs-driven development flow. A feature description (spec) is 
 of truth: nothing is implemented until a spec exists, and everything implemented is validated back
 against the spec by skills and independent verifier subagents.
 
-Use this flow when it is the active flow in `ai/project.md`, or when the user explicitly asks for
-it (e.g. *"let's generate a client feature"*, *"let's implement feature X"*).
+Use this flow when the user explicitly asks for it (e.g. *"let's generate a client feature"*,
+*"let's implement feature X"*), or — with flow usage mode `default` in `ai/project.md` — when the
+prompt requests a non-trivial new feature that needs more planning and iteration **and the user
+has given permission to use the full flow** (always ask before starting it).
 
 All commands referenced by this flow (tests, lint, app start, migrations) come from
 `ai/project.md`.

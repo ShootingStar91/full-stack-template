@@ -10,7 +10,7 @@ Interactively configures the AI development setup for this project. It is **safe
 of times**: every step first reports the current state and asks whether the user wants to keep or
 change it. Nothing is overwritten without the user seeing what will change.
 
-The steps are: **0) permissions → 1) project commands & migrations → 2) flow selection → final
+The steps are: **0) permissions → 1) project commands & migrations → 2) flow usage → final
 summary**. Work through them in order, conversationally, one step at a time. Wait for the user's
 answer at each decision point.
 
@@ -78,12 +78,11 @@ flows and skills read.
    doesn't use Taito) and update them. Show the user a short list of the files you changed.
    Also update the Step 0 permission entries if the commands changed.
 
-## Step 2: Flow Selection
+## Step 2: Flow Usage
 
-Goal: the right development flow for this team and project is set as **Active Flow** in
-`ai/project.md`.
+Goal: the right **Flow Usage** mode for this team and project is set in `ai/project.md`.
 
-1. **Report the currently active flow** from `ai/project.md`.
+1. **Report the current flow usage mode** from `ai/project.md`.
 
 2. **Describe the available flows briefly** (read `ai/flows/` for the current list):
    - **small-flow** — the AI implements the requested small edit or feature, runs and fixes the
@@ -93,18 +92,28 @@ Goal: the right development flow for this team and project is set as **Active Fl
      per session, TDD on the backend, layout-first on the frontend, mandatory validation gates
      with verifier subagents.
 
-3. **Ask which flow should be the project default**, and whether the chosen flow's defaults are OK
-   as described or they'd like to change something (e.g. "small flow should also run E2E tests",
-   "don't commit automatically, only stage", "full flow: skip the layout iteration step").
+3. **Ask whether flows should be used by default, or only when explicitly asked**:
+   - **`default`** — the AI uses flows for every development task and infers which flow fits the
+     prompt: small-flow unless the prompt requests a non-trivial new feature that likely needs
+     more planning and iteration — then the full flow applies, but the AI always asks the user
+     for permission before starting it.
+   - **`on-request`** — the AI works normally without flows and follows a flow only when the user
+     explicitly asks for one.
 
-4. **Apply**: set **Active Flow** in `ai/project.md`; apply any requested customizations by
-   editing the flow file(s) in `ai/flows/` directly. Summarize the edits made.
+   Also ask whether the flows' defaults are OK as described or they'd like to change something
+   (e.g. "small flow should also run E2E tests", "don't commit automatically, only stage",
+   "full flow: skip the layout iteration step").
+
+4. **Apply**: set **Flow Usage** in `ai/project.md` (this is what the session rules in
+   `ai/rules.md` read on every prompt); apply any requested customizations by editing the flow
+   file(s) in `ai/flows/` directly. Summarize the edits made.
 
 ## Final Summary
 
 End with a short report to the user:
 
-- What was configured in each step (permissions written where, commands recorded, active flow).
+- What was configured in each step (permissions written where, commands recorded, flow usage
+  mode).
 - **Where the flows are defined**: `ai/flows/small-flow.md` and `ai/flows/full-flow.md`, with
   project facts in `ai/project.md` and session rules in `ai/rules.md`.
 - **Remind the user**: to edit, add, or omit any step of a flow, they can either edit those files

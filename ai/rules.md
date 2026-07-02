@@ -7,7 +7,7 @@ etc.) and regardless of flow. Tool-specific entry files (`.cursorrules`, `CLAUDE
 
 At the start of a session, read **`ai/project.md`**. It defines:
 
-- the **active flow** (how development tasks are carried out),
+- the **flow usage mode** (whether flows are used by default or only when asked),
 - the **commands** for running the app, tests, lint, and database migrations,
 - the **migrations policy** (whether the AI may run migrations itself),
 - where the **knowledge docs** (architecture, testing, flows) live.
@@ -18,17 +18,23 @@ If `ai/project.md` is still marked as containing **template defaults** and somet
 this project (e.g. a command fails because the project doesn't use the Taito CLI), mention that the
 user can run the `/setup-ai` skill to customize the setup — then continue as best you can.
 
-## 2. Follow the active flow
+## 2. Follow the flow usage mode
 
-For development tasks (edits, features, fixes), read and follow the flow file named as **Active
-Flow** in `ai/project.md`:
+`ai/project.md` sets the **Flow Usage** mode, which determines how flows apply to development
+tasks (edits, features, fixes):
 
-- `ai/flows/small-flow.md` — implement → test → lint → commit. Lightweight default for small work.
-- `ai/flows/full-flow.md` — specs-driven development with validation gates and verifier subagents.
+- **`default`** — use a flow for every development task, and **infer which flow fits the prompt**:
+  - Use `ai/flows/small-flow.md` (implement → test → lint → commit) by default.
+  - If the prompt requests a **non-trivial new feature** that likely needs more planning and
+    iteration, the full flow (`ai/flows/full-flow.md` — specs-driven, validation gates, verifier
+    subagents) is the right fit — but **ask the user for permission before starting the full
+    flow**; if they decline, use the small flow.
+- **`on-request`** — work normally without flows; follow a flow only when the user explicitly
+  asks for one.
 
-The user can override the flow for a single task by asking explicitly (e.g. *"use the full flow
-for this one"*). Requests that clearly use full-flow triggers (*"let's generate a feature spec"*)
-follow the full flow even if small-flow is active.
+In both modes, the user can pick a flow for a single task by asking explicitly (e.g. *"use the
+full flow for this one"*), and requests that clearly use full-flow triggers (*"let's generate a
+feature spec"*) follow the full flow.
 
 Questions, explanations, and reviews that don't change code need no flow.
 

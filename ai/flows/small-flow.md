@@ -3,9 +3,9 @@
 A lightweight development flow for small edits and small features. No feature specs, no session
 boundaries, no validation gates — just: implement, test, lint, commit.
 
-Use this flow when it is the active flow in `ai/project.md`, or when the user explicitly asks for
-it. Typical triggers: the user requests a small edit to existing functionality, a bug fix, or a
-new small feature.
+Use this flow when the flow usage mode in `ai/project.md` is `default` (it is the inferred flow
+for most tasks), or when the user explicitly asks for it. Typical triggers: the user requests a
+small edit to existing functionality, a bug fix, or a new small feature.
 
 All commands referenced below (tests, lint, app start, migrations) come from `ai/project.md`.
 

@@ -9,19 +9,27 @@ be copied into any project and adapted by editing only this file.
 > full-stack-template (Taito CLI based). Run the `/setup-ai` skill to review and customize them
 > for this project — or edit this file directly.
 
-## Active Flow
+## Flow Usage
 
-**Active flow: `full-flow`**
+**Flow usage: `default`**
 
-The active flow defines how the AI works on development tasks. Available flows are defined in
-`ai/flows/`:
+This setting defines whether the AI uses the development flows on its own or only when asked:
+
+- `default` — the AI uses flows for every development task and **infers which flow fits the
+  prompt**: `small-flow` unless the prompt requests a non-trivial new feature that likely needs
+  more planning and iteration, in which case the full flow applies — but the AI must **ask the
+  user for permission before starting the full flow**.
+- `on-request` — the AI works normally without flows, and follows a flow only when the user
+  explicitly asks for one (e.g. *"use the full flow for this"*, *"let's generate a feature spec"*).
+
+Available flows are defined in `ai/flows/`:
 
 - `small-flow` — lightweight: implement the requested change, run and fix tests, lint, commit.
 - `full-flow` — specs-driven: feature specs as source of truth, TDD, validation gates, subagent
   verification.
 
-The user can always override the active flow for a single task by explicitly asking (e.g. *"use
-the small flow for this"*). Change the default by editing the line above or re-running `/setup-ai`.
+The user can always override the inferred flow for a single task by explicitly asking (e.g. *"use
+the small flow for this"*). Change the mode by editing the line above or re-running `/setup-ai`.
 
 ## Commands
 

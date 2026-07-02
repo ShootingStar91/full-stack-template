@@ -20,7 +20,7 @@ The full flow is organized into three cooperating layers plus the specs they rev
 ```mermaid
 flowchart TB
     subgraph RULES["🧭 Governance layer (ai/)"]
-        CR["ai/rules.md + ai/project.md<br/>session rules · active flow · commands<br/>ai/flows/full-flow.md: task boundaries,<br/>auto-validation triggers"]
+        CR["ai/rules.md + ai/project.md<br/>session rules · flow usage mode · commands<br/>ai/flows/full-flow.md: task boundaries,<br/>auto-validation triggers"]
     end
 
     subgraph KNOW["📚 Knowledge layer (per target)"]
@@ -47,7 +47,7 @@ flowchart TB
 ```
 
 - **Governance layer** — `.cursorrules` / `CLAUDE.md` point to `ai/rules.md`, which is read at
-  the start of every session. `ai/project.md` names the active flow and all project commands. In
+  the start of every session. `ai/project.md` sets the flow usage mode and all project commands. In
   the full flow, `ai/flows/full-flow.md` defines what a session is allowed to do and *forces*
   validations to run at specific points.
 - **Knowledge layer** — the `*.md` docs in `server/` and `client/` hold the patterns, conventions,

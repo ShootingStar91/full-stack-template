@@ -21,9 +21,11 @@ Code. The shared setup lives in the [`ai/`](ai/README.md) directory; `.cursorrul
 `.cursor/` and `.claude/` are thin adapters pointing into it.
 
 - **Set it up**: Run the `/setup-ai` skill. It configures tool permissions, records how this
-  project runs its app/tests/lint/migrations into `ai/project.md`, and lets you pick a flow. It is
-  re-runnable and also works after copying the `ai/` setup into a non-template project.
-- **Choose a flow** (in `ai/project.md`, selectable via `/setup-ai`):
+  project runs its app/tests/lint/migrations into `ai/project.md`, and asks how flows should be
+  used. It is re-runnable and also works after copying the `ai/` setup into a non-template project.
+- **Flow usage** (in `ai/project.md`, selectable via `/setup-ai`): flows are used either **by
+  default** — the AI infers the right flow per prompt: small-flow normally, full flow (with the
+  user's permission first) for non-trivial new features — or **only when explicitly asked**.
   - **small-flow** — the AI implements a small edit or feature, runs and fixes tests, lints, commits.
   - **full-flow** — specs-driven development: say "let's generate a client/server feature" to write
     a spec, "let's implement feature X" to implement it with TDD and validation gates.

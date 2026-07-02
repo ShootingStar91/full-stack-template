@@ -10,8 +10,8 @@ works everywhere.
 | Path | What it is |
 |---|---|
 | `rules.md` | Session entry point — rules that apply to every AI session. |
-| `project.md` | **Project configuration**: active flow, commands (app, tests, lint), migrations policy, knowledge-doc locations. The single source of truth for project-specific facts. |
-| `flows/` | Selectable development flows. `small-flow.md` (implement → test → lint → commit) and `full-flow.md` (specs-driven with validation gates). The active one is named in `project.md`. |
+| `project.md` | **Project configuration**: flow usage mode, commands (app, tests, lint), migrations policy, knowledge-doc locations. The single source of truth for project-specific facts. |
+| `flows/` | Selectable development flows. `small-flow.md` (implement → test → lint → commit) and `full-flow.md` (specs-driven with validation gates). How they are used is set in `project.md`. |
 | `skills/` | Instructions for invocable skills (`/run-tests`, `/git-workflow`, `/setup-ai`, ...). |
 | `agents/` | Instructions for verifier subagents used by the full flow. |
 | `docs/` | Human-facing documentation with diagrams: [`docs/overview.md`](docs/overview.md) for the whole setup, [`docs/full-flow.md`](docs/full-flow.md) for the specs-driven flow in depth. |
@@ -22,7 +22,7 @@ describe (`server/*.md`, `client/*.md`) and are indexed in `project.md`.
 ## Getting started
 
 Run the **`/setup-ai`** skill. It walks through tool permissions, project commands (including how
-database migrations are handled), and flow selection. It is safe to re-run anytime — it reports
+database migrations are handled), and flow usage. It is safe to re-run anytime — it reports
 the current configuration and asks what to change.
 
 To adjust a flow later, edit the file in `flows/` directly or ask the AI to do it.
@@ -37,5 +37,5 @@ The setup is designed to be portable, including to projects with different stack
    similar patterns — otherwise skip them and update the "Knowledge docs" table in `project.md`
    (the full flow depends on them; the small flow doesn't).
 3. Run `/setup-ai` in the target project. It replaces the template's Taito CLI commands with the
-   project's own, records the migrations policy, sets up permissions, and lets the team pick and
-   customize a flow.
+   project's own, records the migrations policy, sets up permissions, and lets the team choose
+   how flows are used and customize them.

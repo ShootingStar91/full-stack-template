@@ -24,7 +24,7 @@ flowchart TB
 
     subgraph AI["📦 ai/ — shared setup (the real content)"]
         RULES["rules.md<br/>session entry rules"]
-        PROJ["project.md<br/>active flow · commands ·<br/>migrations policy · doc index"]
+        PROJ["project.md<br/>flow usage mode · commands ·<br/>migrations policy · doc index"]
         subgraph FLOWS["flows/"]
             SMALL["small-flow.md"]
             FULL["full-flow.md"]
@@ -46,8 +46,8 @@ flowchart TB
 
 | Piece | Role |
 |---|---|
-| `ai/rules.md` | Read at the start of every session: read `project.md`, follow the active flow, app auto-start rules, git rules. |
-| `ai/project.md` | **Single source of truth for project facts**: the active flow, commands for app/tests/lint, the database-migrations policy, and where the knowledge docs live. Every flow and skill defers to it — if a command here conflicts with one written elsewhere, this file wins. |
+| `ai/rules.md` | Read at the start of every session: read `project.md`, apply the flow usage mode, app auto-start rules, git rules. |
+| `ai/project.md` | **Single source of truth for project facts**: the flow usage mode, commands for app/tests/lint, the database-migrations policy, and where the knowledge docs live. Every flow and skill defers to it — if a command here conflicts with one written elsewhere, this file wins. |
 | `ai/flows/` | The selectable development flows (see below). |
 | `ai/skills/` | Instructions for invocable skills (`/run-tests`, `/git-workflow`, `/setup-ai`, spec validation, layout iteration, ...). |
 | `ai/agents/` | Instructions for the independent verifier subagents used by the full flow. |
@@ -57,17 +57,21 @@ flowchart TB
 
 ## 2. Flows
 
-A **flow** defines how the AI carries out development tasks. The active flow is named in
-`ai/project.md`; the user can override it for a single task by asking explicitly, and requests
-that clearly use another flow's triggers (e.g. *"let's generate a feature spec"*) follow that
-flow.
+A **flow** defines how the AI carries out development tasks. The **Flow Usage** mode in
+`ai/project.md` decides how flows apply: with `default`, the AI infers the right flow per prompt
+(small-flow normally; the full flow for non-trivial new features — asking the user's permission
+before starting it); with `on-request`, flows run only when explicitly asked. In both modes the
+user can pick a flow for a single task by asking, and requests that clearly use a flow's triggers
+(e.g. *"let's generate a feature spec"*) follow that flow.
 
 ```mermaid
 flowchart LR
     REQ([User request]) --> ENTRY["ai/rules.md<br/>read ai/project.md"]
-    ENTRY --> WHICH{Active flow /<br/>explicit trigger?}
-    WHICH -->|small-flow| S["ai/flows/small-flow.md"]
-    WHICH -->|full-flow| F["ai/flows/full-flow.md"]
+    ENTRY --> MODE{Flow usage mode}
+    MODE -->|on-request| N["No flow unless<br/>explicitly asked"]
+    MODE -->|default: infer per prompt| WHICH{Non-trivial<br/>new feature?}
+    WHICH -->|no| S["ai/flows/small-flow.md"]
+    WHICH -->|yes: ask permission| F["ai/flows/full-flow.md"]
 ```
 
 ### small-flow — implement · test · lint · commit
@@ -100,7 +104,8 @@ independent subagents. Documented in detail in [`full-flow.md`](./full-flow.md).
 
 **Choosing between them**: small-flow suits day-to-day maintenance and teams that find the full
 flow too heavy; full-flow suits larger feature work where specs and independent verification pay
-off. Teams can also keep small-flow active and invoke the full flow only for selected features.
+off. With flow usage `default`, the AI makes this call per prompt (asking before starting the
+full flow); with `on-request`, the team invokes a flow only when they want one.
 
 Adding a new flow = adding a file to `ai/flows/` and mentioning it in `ai/project.md`.
 
@@ -115,7 +120,7 @@ Adding a new flow = adding a file to `ai/flows/` and mentioning it in `ai/projec
 flowchart TD
     S([User runs /setup-ai]) --> P0["Step 0 · Permissions<br/>detect tool(s) · read existing config<br/>propose safe permissions (git, file edits,<br/>project commands) · user approves · write"]
     P0 --> P1["Step 1 · Commands & migrations<br/>interview: start app? tests? lint?<br/>migrations — how, and may the AI run them?<br/>verify cheap commands · write ai/project.md<br/>propagate to other AI files"]
-    P1 --> P2["Step 2 · Flow selection<br/>describe available flows · pick default<br/>apply customizations to ai/flows/*"]
+    P1 --> P2["Step 2 · Flow usage<br/>flows by default (inferred per prompt)<br/>or only when asked ·<br/>apply customizations to ai/flows/*"]
     P2 --> FIN["Final summary<br/>where flows are defined ·<br/>edit directly or ask the AI"]
 ```
 
@@ -127,8 +132,10 @@ flowchart TD
 - **Commands & migrations** (step 1): the answers land in `ai/project.md`, and any AI files with
   now-contradicting hardcoded commands are updated. This is the step that makes the setup work in
   a non-template project (different test runner, no Taito CLI, special services).
-- **Flow selection** (step 2): sets **Active Flow** in `ai/project.md` and applies any requested
-  tweaks (add/remove/change steps) directly to the flow files.
+- **Flow usage** (step 2): sets the **Flow Usage** mode in `ai/project.md` — flows used by
+  default (the AI infers small-flow vs. full flow per prompt, asking permission before the full
+  flow) or only when explicitly asked — and applies any requested tweaks (add/remove/change
+  steps) directly to the flow files.
 
 ---
 
