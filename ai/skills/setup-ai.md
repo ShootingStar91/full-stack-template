@@ -14,6 +14,24 @@ The steps are: **0) permissions → 1) project commands & migrations → 2) flow
 final summary**. Work through them in order, conversationally, one step at a time. Wait for the user's
 answer at each decision point.
 
+### How to present-and-ask (applies to every decision below)
+
+Several steps require the user to see something (a permission list, flow descriptions, current
+config values) *before* they can answer. For those, follow this rule exactly — it is the part that
+has previously failed, so do not treat it as optional:
+
+1. **First emit the information as plain visible text** in your normal assistant reply — a markdown
+   list or fenced block the user can read in the transcript. This text is mandatory; putting the
+   content only in your reasoning, in a tool-call argument, or in the short option labels of a
+   picker does **not** count and is the exact bug this instruction exists to prevent.
+2. **Then ask the question.** You may ask in plain text (and wait for a typed reply) or use a
+   structured `AskUserQuestion` prompt — but if you use a picker, the full information must *already*
+   appear in the plain-text portion of the same message, above the picker. Never fire a picker whose
+   only context is its own labels.
+
+If you cannot fit both the visible list and the question in one message, send the list as its own
+message first, then ask in the next — but never ask before the list is visible.
+
 ## Step 0: Tool Permissions
 
 Goal: the AI tool can do routine safe operations (read/edit files in this repo, safe git commands,
@@ -45,10 +63,12 @@ the project's test/lint commands) without prompting the user every time.
    - **Not included** (always prompt): `git push`, deleting files outside normal edits, anything
      touching remote/production environments.
 
-4. **Show the user the exact permission entries you intend to write and ask if this is OK.**
-   The full list of entries must be visible in the same message as the question — never ask
-   "is this permission set OK?" while the list only exists in your reasoning or an earlier tool
-   result. If you use a structured question prompt, print the list as text immediately before it.
+4. **Show the user the exact permission entries you intend to write, then ask if this is OK**,
+   following the "How to present-and-ask" rule above. Concretely: emit every permission entry as a
+   visible plain-text list (one entry per line, e.g. `Bash(git status:*)`, `Edit(**)`, one line per
+   test/lint/app command) in your reply. Only after that list is on screen do you ask whether it is
+   OK or needs edits. Do not ask "is this permission set OK?" while the entries exist only in your
+   reasoning, in a tool-call argument, or as picker labels.
    Apply their edits (add/remove entries), then write the config file, merging with any existing
    entries rather than replacing them. Verify the JSON is valid after writing.
 
@@ -93,7 +113,9 @@ Goal: the right **Flow Usage** mode for this team and project is set in `ai/proj
 
 1. **Report the current flow usage mode** from `ai/project.md`.
 
-2. **Describe the available flows briefly** (read `ai/flows/` for the current list):
+2. **Describe the available flows as visible plain text** (read `ai/flows/` for the current list),
+   per the "How to present-and-ask" rule above. Emit these descriptions in your reply before asking
+   anything — not only in your reasoning or a picker:
    - **small-flow** — the AI implements the requested small edit or feature, runs and fixes the
      relevant tests (adding tests when behavior changes), lints, and commits. No specs, no
      validation gates.
@@ -101,10 +123,11 @@ Goal: the right **Flow Usage** mode for this team and project is set in `ai/proj
      per session, TDD on the backend, layout-first on the frontend, mandatory validation gates
      with verifier subagents.
 
-3. **Ask whether flows should be used by default, or only when explicitly asked.** The brief
-   flow descriptions from the previous point must appear as text immediately before this
-   question, in the same message — the user needs to know what small-flow and full-flow do
-   before choosing how they are triggered. Options:
+3. **Ask whether flows should be used by default, or only when explicitly asked.** The two flow
+   descriptions from the previous point must already be visible as text in the same message as the
+   question (or in a message that precedes it) — the user needs to know what small-flow and
+   full-flow do before choosing how they are triggered. Do not present this choice with only the
+   short mode labels (`default` / `on-request`) visible. Options:
    - **`default`** — the AI uses flows for every development task and infers which flow fits the
      prompt: small-flow unless the prompt requests a non-trivial new feature that likely needs
      more planning and iteration — then the full flow applies, but the AI always asks the user
