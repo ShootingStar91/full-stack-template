@@ -14,23 +14,23 @@ The steps are: **0) permissions → 1) project commands & migrations → 2) flow
 final summary**. Work through them in order, conversationally, one step at a time. Wait for the user's
 answer at each decision point.
 
-### How to present-and-ask (applies to every decision below)
+### How to present-and-ask (applies to every decision below — read this first)
 
-Several steps require the user to see something (a permission list, flow descriptions, current
-config values) *before* they can answer. For those, follow this rule exactly — it is the part that
-has previously failed, so do not treat it as optional:
+Previous runs failed because questions were batched together and the information the user needed
+in order to answer (permission lists, flow descriptions, current config) was never shown. To make
+this actually work, follow these rules for **every** decision in this skill, without exception:
 
-1. **First emit the information as plain visible text** in your normal assistant reply — a markdown
-   list or fenced block the user can read in the transcript. This text is mandatory; putting the
-   content only in your reasoning, in a tool-call argument, or in the short option labels of a
-   picker does **not** count and is the exact bug this instruction exists to prevent.
-2. **Then ask the question.** You may ask in plain text (and wait for a typed reply) or use a
-   structured `AskUserQuestion` prompt — but if you use a picker, the full information must *already*
-   appear in the plain-text portion of the same message, above the picker. Never fire a picker whose
-   only context is its own labels.
-
-If you cannot fit both the visible list and the question in one message, send the list as its own
-message first, then ask in the next — but never ask before the list is visible.
+- **Do NOT use the `AskUserQuestion` tool / structured picker anywhere in this skill.** Its UI hides
+  the surrounding explanation and encourages batching. Ask in plain text in your normal reply and
+  wait for the user to type an answer.
+- **Ask exactly ONE question per message.** Never bundle multiple questions into one turn, even when
+  they feel related (e.g. do not ask about app start, tests, lint, and migrations together — that is
+  four separate messages). After asking, stop and wait for the reply before moving on.
+- **Print the information the question depends on as plain visible text in the same message, above
+  the question** — a markdown list or fenced block the user can actually read in the transcript.
+  Content that lives only in your reasoning or in a tool-call argument does not count. If there is
+  nothing to show for a given question, just ask it.
+- Keep each message focused: the relevant context, then the single question, then stop.
 
 ## Step 0: Tool Permissions
 
@@ -64,11 +64,11 @@ the project's test/lint commands) without prompting the user every time.
      touching remote/production environments.
 
 4. **Show the user the exact permission entries you intend to write, then ask if this is OK**,
-   following the "How to present-and-ask" rule above. Concretely: emit every permission entry as a
-   visible plain-text list (one entry per line, e.g. `Bash(git status:*)`, `Edit(**)`, one line per
-   test/lint/app command) in your reply. Only after that list is on screen do you ask whether it is
-   OK or needs edits. Do not ask "is this permission set OK?" while the entries exist only in your
-   reasoning, in a tool-call argument, or as picker labels.
+   following the "How to present-and-ask" rule above. In one message: emit every permission entry as
+   a visible plain-text list (one entry per line, e.g. `Bash(git status:*)`, `Edit(**)`, one line per
+   test/lint/app command), then ask the single question of whether the list is OK or needs edits, and
+   stop for the reply. Never ask "is this permission set OK?" without the full list visible in that
+   same message.
    Apply their edits (add/remove entries), then write the config file, merging with any existing
    entries rather than replacing them. Verify the JSON is valid after writing.
 
@@ -81,8 +81,9 @@ flows and skills read.
    started, how each test suite is run, how lint runs, how migrations work, and the migrations
    autonomy policy. Note whether the file is still marked as "template defaults".
 
-2. **Ask the user what differs in their project.** Go through these, offering the current value as
-   the default (fine to ask as one grouped question, then follow up on what they want to change):
+2. **Ask the user what differs in their project — one topic per message** (per the
+   "How to present-and-ask" rule; do NOT combine these into a single grouped question). For each,
+   show the current value from `ai/project.md` as text, then ask the one question and wait:
    - How is the app/stack started for development? How do you check it's up? How is it stopped?
    - How are unit tests run? Integration/API tests? E2E tests? Which need the app running?
    - How are lint and typecheck run?
@@ -135,11 +136,12 @@ Goal: the right **Flow Usage** mode for this team and project is set in `ai/proj
    - **`on-request`** — the AI works normally without flows and follows a flow only when the user
      explicitly asks for one.
 
-   Also ask whether the flows' defaults are OK as described or they'd like to change something
-   (e.g. "small flow should also run E2E tests", "don't commit automatically, only stage",
-   "full flow: skip the layout iteration step").
+4. **Then, in a separate message**, ask whether the flows' defaults are OK as described or they'd
+   like to change something (e.g. "small flow should also run E2E tests", "don't commit
+   automatically, only stage", "full flow: skip the layout iteration step"). Do not merge this with
+   the flow-usage question above.
 
-4. **Apply**: set **Flow Usage** in `ai/project.md` (this is what the session rules in
+5. **Apply**: set **Flow Usage** in `ai/project.md` (this is what the session rules in
    `ai/rules.md` read on every prompt); apply any requested customizations by editing the flow
    file(s) in `ai/flows/` directly. Summarize the edits made.
 
